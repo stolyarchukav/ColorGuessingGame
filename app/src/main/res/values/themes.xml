@@ -1,0 +1,4 @@
+<resources>
+
+    <style name="Theme.ColorGuessingGame" parent="Theme.MaterialComponents.Light" />
+</resources>
