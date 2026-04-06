@@ -1,5 +1,7 @@
 package com.stolyarchuk.colorguessinggame.ui
 
+import com.stolyarchuk.colorguessinggame.R
+
 import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
