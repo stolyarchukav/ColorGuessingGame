@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Логика цвета</string>
+    <string name="game_header_hint">Я загадал комбинацию цветов, попробуй угадать</string>
+    <string name="restart_game">Начать заново</string>
+    <string name="submit_guess">Проверить</string>
+    <string name="victory">Победа!</string>
+    <string name="game_over">Игра окончена</string>
+    <string name="congratulations">Поздравляем!</string>
+    <string name="better_luck">Повезет в следующий раз!</string>
+    <string name="secret_code_was">Загаданная комбинация:</string>
+    <string name="play_again">Играть снова</string>
+</resources>

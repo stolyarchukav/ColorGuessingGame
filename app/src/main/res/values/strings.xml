@@ -1,3 +1,12 @@
 <resources>
-    <string name="app_name">ColorGuessingGame</string>
+    <string name="app_name">Color Logic</string>
+    <string name="game_header_hint">I have thought of a color combination, try to guess it</string>
+    <string name="restart_game">Restart Game</string>
+    <string name="submit_guess">Submit Guess</string>
+    <string name="victory">Victory!</string>
+    <string name="game_over">Game Over</string>
+    <string name="congratulations">Congratulations!</string>
+    <string name="better_luck">Better luck next time!</string>
+    <string name="secret_code_was">The secret code was:</string>
+    <string name="play_again">Play Again</string>
 </resources>

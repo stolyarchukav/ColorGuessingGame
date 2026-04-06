@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,11 +46,64 @@ fun GameScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Color Guessing Game", fontWeight = FontWeight.Bold) },
+                title = {
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Column(
+                            modifier = Modifier.align(Alignment.Center),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = stringResource(R.string.game_header_hint),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(bottom = 4.dp)
+                            )
+                            Row(
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                uiState.secretCode.forEachIndexed { index, color ->
+                                    val isRevealed = uiState.status != GameStatus.PLAYING
+                                    Box(
+                                        modifier = Modifier
+                                            .size(40.dp)
+                                            .clip(CircleShape)
+                                            .background(
+                                                if (isRevealed) color.color 
+                                                else MaterialTheme.colorScheme.outline
+                                            )
+                                            .border(
+                                                width = 1.dp,
+                                                color = if (isRevealed) Color.Transparent else MaterialTheme.colorScheme.outlineVariant,
+                                                shape = CircleShape
+                                            ),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        if (!isRevealed) {
+                                            Text(
+                                                text = "?",
+                                                color = MaterialTheme.colorScheme.surface,
+                                                style = MaterialTheme.typography.titleMedium,
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                        }
+                                    }
+                                    if (index < 4) Spacer(modifier = Modifier.width(8.dp))
+                                }
+                            }
+                        }
+                    }
+                },
+                navigationIcon = {
+                    // Empty spacer to balance the actions icon and help center the title
+                    Spacer(modifier = Modifier.width(48.dp))
+                },
                 actions = {
                     IconButton(onClick = { viewModel.startNewGame() }) {
-                        Icon(Icons.Default.Refresh, contentDescription = "Restart Game")
-                    }
+                    Icon(Icons.Default.Refresh, contentDescription = stringResource(R.string.restart_game))
+                }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -271,16 +325,16 @@ fun BottomControls(
                     modifier = Modifier.fillMaxWidth(),
                     shape = MaterialTheme.shapes.medium
                 ) {
-                    Text("Submit Guess")
+                    Text(stringResource(R.string.submit_guess))
                 }
             } else {
                 Text(
-                    text = if (status == GameStatus.WON) "Victory!" else "Game Over",
+                    text = if (status == GameStatus.WON) stringResource(R.string.victory) else stringResource(R.string.game_over),
                     style = MaterialTheme.typography.headlineMedium,
                     color = if (status == GameStatus.WON) Color(0xFF4CAF50) else MaterialTheme.colorScheme.error
                 )
                 Button(onClick = onRestart, modifier = Modifier.fillMaxWidth()) {
-                    Text("Restart Game")
+                    Text(stringResource(R.string.restart_game))
                 }
             }
         }
@@ -297,14 +351,14 @@ fun GameResultDialog(
         onDismissRequest = { },
         title = {
             Text(
-                text = if (status == GameStatus.WON) "Congratulations!" else "Better luck next time!",
+                text = if (status == GameStatus.WON) stringResource(R.string.congratulations) else stringResource(R.string.better_luck),
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
         },
         text = {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("The secret code was:")
+                Text(stringResource(R.string.secret_code_was))
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     secretCode.forEach { color ->
@@ -320,7 +374,7 @@ fun GameResultDialog(
         },
         confirmButton = {
             Button(onClick = onRestart) {
-                Text("Play Again")
+                Text(stringResource(R.string.play_again))
             }
         }
     )
