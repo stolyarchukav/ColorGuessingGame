@@ -43,9 +43,25 @@ fun GameScreen(
     var showHelpDialog by remember { mutableStateOf(false) }
     var showRestartConfirmDialog by remember { mutableStateOf(false) }
 
-    // Scroll to current row when it changes
+    // Scroll to current row only if it's not fully visible
     LaunchedEffect(uiState.currentGuessIndex) {
-        listState.animateScrollToItem(uiState.currentGuessIndex)
+        val layoutInfo = listState.layoutInfo
+        val visibleItem = layoutInfo.visibleItemsInfo.find { it.index == uiState.currentGuessIndex }
+        
+        if (visibleItem == null) {
+            // Not visible at all, scroll to it
+            listState.animateScrollToItem(uiState.currentGuessIndex)
+        } else {
+            val viewportStart = layoutInfo.viewportStartOffset
+            val viewportEnd = layoutInfo.viewportEndOffset
+            val itemStart = visibleItem.offset
+            val itemEnd = visibleItem.offset + visibleItem.size
+            
+            // If item is partially hidden at the bottom or top
+            if (itemEnd > viewportEnd || itemStart < viewportStart) {
+                listState.animateScrollToItem(uiState.currentGuessIndex)
+            }
+        }
     }
 
     Scaffold(
@@ -112,9 +128,12 @@ fun GameScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 itemsIndexed(uiState.guessRows) { index, row ->
+                    val isCurrent = index == uiState.currentGuessIndex && uiState.status == GameStatus.PLAYING
+                    val isRecent = index in (uiState.currentGuessIndex - 2) until uiState.currentGuessIndex
                     GuessRowItem(
                         row = row,
-                        isCurrent = index == uiState.currentGuessIndex && uiState.status == GameStatus.PLAYING,
+                        isCurrent = isCurrent,
+                        isRecent = isRecent,
                         selectedPegIndex = uiState.selectedPegIndex,
                         onPegClick = { pegIndex -> viewModel.setSelectedPeg(pegIndex) },
                         rowIndex = index
@@ -205,15 +224,17 @@ fun GameHelpDialog(onDismiss: () -> Unit) {
 fun GuessRowItem(
     row: GuessRow,
     isCurrent: Boolean,
+    isRecent: Boolean,
     selectedPegIndex: Int,
     onPegClick: (Int) -> Unit,
     rowIndex: Int
 ) {
+    val isHighlighted = isCurrent || isRecent
     Surface(
-        tonalElevation = if (isCurrent) 8.dp else 1.dp,
+        tonalElevation = if (isHighlighted) 8.dp else 1.dp,
         shape = MaterialTheme.shapes.medium,
         modifier = Modifier.fillMaxWidth(),
-        color = if (isCurrent) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.surface,
+        color = if (isHighlighted) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.surface,
         border = if (isCurrent) borderStroke(2.dp, MaterialTheme.colorScheme.primary) else null
     ) {
         Row(
