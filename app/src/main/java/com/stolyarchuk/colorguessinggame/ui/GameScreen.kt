@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.HelpOutline
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -39,6 +40,7 @@ fun GameScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val listState = rememberLazyListState()
+    var showHelpDialog by remember { mutableStateOf(false) }
 
     // Scroll to current row when it changes
     LaunchedEffect(uiState.currentGuessIndex) {
@@ -103,9 +105,12 @@ fun GameScreen(
                     Spacer(modifier = Modifier.width(48.dp))
                 },
                 actions = {
+                    IconButton(onClick = { showHelpDialog = true }) {
+                        Icon(Icons.Default.HelpOutline, contentDescription = stringResource(R.string.help))
+                    }
                     IconButton(onClick = { viewModel.startNewGame() }) {
-                    Icon(Icons.Default.Refresh, contentDescription = stringResource(R.string.restart_game))
-                }
+                        Icon(Icons.Default.Refresh, contentDescription = stringResource(R.string.restart_game))
+                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -167,6 +172,34 @@ fun GameScreen(
             onRestart = { viewModel.startNewGame() }
         )
     }
+
+    if (showHelpDialog) {
+        GameHelpDialog(onDismiss = { showHelpDialog = false })
+    }
+}
+
+@Composable
+fun GameHelpDialog(onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = stringResource(R.string.game_rules_title),
+                style = MaterialTheme.typography.headlineSmall
+            )
+        },
+        text = {
+            Text(
+                text = stringResource(R.string.game_rules_text),
+                style = MaterialTheme.typography.bodyMedium
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.close))
+            }
+        }
+    )
 }
 
 @Composable

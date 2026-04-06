@@ -9,4 +9,8 @@
     <string name="better_luck">Better luck next time!</string>
     <string name="secret_code_was">The secret code was:</string>
     <string name="play_again">Play Again</string>
+    <string name="help">Help</string>
+    <string name="game_rules_title">How to Play</string>
+    <string name="game_rules_text">1. The computer thinks of a secret code of 5 colors.\n2. You have 12 attempts to guess it.\n3. After each guess, you get feedback:\n   • Black peg: Correct color in the correct position.\n   • White peg: Correct color in the wrong position.\n4. Try to find the secret code before you run out of attempts!</string>
+    <string name="close">Close</string>
 </resources>
