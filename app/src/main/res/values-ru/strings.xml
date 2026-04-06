@@ -13,4 +13,8 @@
     <string name="game_rules_title">Как играть</string>
     <string name="game_rules_text">1. Компьютер загадывает секретный код из 5 цветов.\n2. У вас есть 12 попыток, чтобы угадать его.\n3. После каждой попытки вы получаете подсказку:\n   • Черная фишка: Цвет угадан верно и стоит на своем месте.\n   • Белая фишка: Цвет угадан верно, но стоит на другом месте.\n4. Попробуйте разгадать код, пока не закончились попытки!</string>
     <string name="close">Закрыть</string>
+    <string name="confirm_restart_title">Начать заново?</string>
+    <string name="confirm_restart_message">Вы уверены, что хотите начать новую игру? Текущий прогресс будет потерян.</string>
+    <string name="confirm">Да</string>
+    <string name="cancel">Отмена</string>
 </resources>

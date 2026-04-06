@@ -13,4 +13,8 @@
     <string name="game_rules_title">How to Play</string>
     <string name="game_rules_text">1. The computer thinks of a secret code of 5 colors.\n2. You have 12 attempts to guess it.\n3. After each guess, you get feedback:\n   • Black peg: Correct color in the correct position.\n   • White peg: Correct color in the wrong position.\n4. Try to find the secret code before you run out of attempts!</string>
     <string name="close">Close</string>
+    <string name="confirm_restart_title">Restart Game?</string>
+    <string name="confirm_restart_message">Are you sure you want to start a new game? Your current progress will be lost.</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
 </resources>

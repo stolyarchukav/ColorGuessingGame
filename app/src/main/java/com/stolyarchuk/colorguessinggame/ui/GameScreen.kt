@@ -41,6 +41,7 @@ fun GameScreen(
     val uiState by viewModel.uiState.collectAsState()
     val listState = rememberLazyListState()
     var showHelpDialog by remember { mutableStateOf(false) }
+    var showRestartConfirmDialog by remember { mutableStateOf(false) }
 
     // Scroll to current row when it changes
     LaunchedEffect(uiState.currentGuessIndex) {
@@ -51,53 +52,16 @@ fun GameScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        Column(
-                            modifier = Modifier.align(Alignment.Center),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Text(
-                                text = stringResource(R.string.game_header_hint),
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.padding(bottom = 4.dp)
-                            )
-                            Row(
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                uiState.secretCode.forEachIndexed { index, color ->
-                                    val isRevealed = uiState.status != GameStatus.PLAYING
-                                    Box(
-                                        modifier = Modifier
-                                            .size(40.dp)
-                                            .clip(CircleShape)
-                                            .background(
-                                                if (isRevealed) color.color 
-                                                else MaterialTheme.colorScheme.outline
-                                            )
-                                            .border(
-                                                width = 1.dp,
-                                                color = if (isRevealed) Color.Transparent else MaterialTheme.colorScheme.outlineVariant,
-                                                shape = CircleShape
-                                            ),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        if (!isRevealed) {
-                                            Text(
-                                                text = "?",
-                                                color = MaterialTheme.colorScheme.surface,
-                                                style = MaterialTheme.typography.titleMedium,
-                                                fontWeight = FontWeight.Bold
-                                            )
-                                        }
-                                    }
-                                    if (index < 4) Spacer(modifier = Modifier.width(8.dp))
-                                }
-                            }
-                        }
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = stringResource(R.string.game_header_hint),
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            textAlign = TextAlign.Center
+                        )
                     }
                 },
                 navigationIcon = {
@@ -108,7 +72,13 @@ fun GameScreen(
                     IconButton(onClick = { showHelpDialog = true }) {
                         Icon(Icons.Default.HelpOutline, contentDescription = stringResource(R.string.help))
                     }
-                    IconButton(onClick = { viewModel.startNewGame() }) {
+                    IconButton(onClick = { 
+                        if (uiState.status == GameStatus.PLAYING) {
+                            showRestartConfirmDialog = true 
+                        } else {
+                            viewModel.startNewGame()
+                        }
+                    }) {
                         Icon(Icons.Default.Refresh, contentDescription = stringResource(R.string.restart_game))
                     }
                 },
@@ -176,6 +146,35 @@ fun GameScreen(
     if (showHelpDialog) {
         GameHelpDialog(onDismiss = { showHelpDialog = false })
     }
+
+    if (showRestartConfirmDialog) {
+        RestartConfirmDialog(
+            onConfirm = {
+                showRestartConfirmDialog = false
+                viewModel.startNewGame()
+            },
+            onDismiss = { showRestartConfirmDialog = false }
+        )
+    }
+}
+
+@Composable
+fun RestartConfirmDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.confirm_restart_title)) },
+        text = { Text(stringResource(R.string.confirm_restart_message)) },
+        confirmButton = {
+            Button(onClick = onConfirm) {
+                Text(stringResource(R.string.confirm))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.cancel))
+            }
+        }
+    )
 }
 
 @Composable
