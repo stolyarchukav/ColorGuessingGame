@@ -21,4 +21,16 @@
     <string name="attempts_count">Количество попыток:</string>
     <string name="code_length">Длина кода:</string>
     <string name="save">Сохранить</string>
+    <string name="statistics">Статистика</string>
+    <string name="new_record">Новый рекорд!</string>
+    <string name="enter_name">Введите ваше имя:</string>
+    <string name="name_hint">Ваше имя</string>
+    <string name="time_records">Рекорды по времени</string>
+    <string name="attempts_records">Рекорды по попыткам</string>
+    <string name="rank">Место</string>
+    <string name="name">Имя</string>
+    <string name="time">Время</string>
+    <string name="attempts">Попытки</string>
+    <string name="no_records">Рекордов пока нет</string>
+    <string name="sec_suffix">с</string>
 </resources>

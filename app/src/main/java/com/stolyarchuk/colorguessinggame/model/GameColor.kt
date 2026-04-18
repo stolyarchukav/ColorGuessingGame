@@ -7,9 +7,10 @@ enum class GameColor(val color: Color) {
     GREEN(Color(0xFF4CAF50)),
     BLUE(Color(0xFF2196F3)),
     YELLOW(Color(0xFFFFEB3B)),
-    PURPLE(Color(0xFF9C27B0));
+    PURPLE(Color(0xFF9C27B0)),
+    ORANGE(Color(0xFFFF9800));
 
     companion object {
-        fun fromIndex(index: Int): GameColor = values()[index % values().size]
+        fun fromIndex(index: Int): GameColor = entries[index % entries.size]
     }
 }

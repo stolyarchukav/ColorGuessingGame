@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.HelpOutline
+import androidx.compose.material.icons.filled.Leaderboard
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
@@ -40,10 +41,12 @@ fun GameScreen(
     viewModel: GameViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val stats by viewModel.statistics.collectAsState()
     val listState = rememberLazyListState()
     var showHelpDialog by remember { mutableStateOf(false) }
     var showRestartConfirmDialog by remember { mutableStateOf(false) }
     var showSettingsDialog by remember { mutableStateOf(false) }
+    var showStatsDialog by remember { mutableStateOf(false) }
 
     // Scroll to current row only if it's not fully visible
     LaunchedEffect(uiState.currentGuessIndex) {
@@ -83,8 +86,13 @@ fun GameScreen(
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = { showSettingsDialog = true }) {
-                        Icon(Icons.Default.Settings, contentDescription = stringResource(R.string.settings))
+                    Row {
+                        IconButton(onClick = { showSettingsDialog = true }) {
+                            Icon(Icons.Default.Settings, contentDescription = stringResource(R.string.settings))
+                        }
+                        IconButton(onClick = { showStatsDialog = true }) {
+                            Icon(Icons.Default.Leaderboard, contentDescription = stringResource(R.string.statistics))
+                        }
                     }
                 },
                 actions = {
@@ -158,10 +166,23 @@ fun GameScreen(
 
     // Win/Loss Dialogs
     if (uiState.status != GameStatus.PLAYING) {
-        GameResultDialog(
-            status = uiState.status,
-            secretCode = uiState.secretCode,
-            onRestart = { viewModel.startNewGame() }
+        if (uiState.isNewRecord && uiState.pendingRecord != null) {
+            NewRecordDialog(
+                onSave = { name -> viewModel.savePendingRecord(name) }
+            )
+        } else {
+            GameResultDialog(
+                status = uiState.status,
+                secretCode = uiState.secretCode,
+                onRestart = { viewModel.startNewGame() }
+            )
+        }
+    }
+
+    if (showStatsDialog) {
+        StatisticsDialog(
+            stats = stats,
+            onDismiss = { showStatsDialog = false }
         )
     }
 
@@ -403,7 +424,7 @@ fun ColorPalette(onColorSelected: (GameColor) -> Unit) {
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            GameColor.values().forEach { gameColor ->
+            GameColor.entries.forEach { gameColor ->
                 Box(
                     modifier = Modifier
                         .size(48.dp)
@@ -455,6 +476,104 @@ fun BottomControls(
             }
         }
     }
+}
+
+@Composable
+fun NewRecordDialog(onSave: (String) -> Unit) {
+    var name by remember { mutableStateOf("") }
+    AlertDialog(
+        onDismissRequest = { },
+        title = { Text(stringResource(R.string.new_record)) },
+        text = {
+            Column {
+                Text(stringResource(R.string.enter_name))
+                TextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    placeholder = { Text(stringResource(R.string.name_hint)) },
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = { if (name.isNotBlank()) onSave(name) },
+                enabled = name.isNotBlank()
+            ) {
+                Text(stringResource(R.string.save))
+            }
+        }
+    )
+}
+
+@Composable
+fun StatisticsDialog(stats: GameStatistics, onDismiss: () -> Unit) {
+    var selectedTab by remember { mutableIntStateOf(0) }
+    val tabs = listOf(stringResource(R.string.time_records), stringResource(R.string.attempts_records))
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.statistics)) },
+        text = {
+            Column(modifier = Modifier.fillMaxWidth().height(400.dp)) {
+                TabRow(selectedTabIndex = selectedTab) {
+                    tabs.forEachIndexed { index, title ->
+                        Tab(
+                            selected = selectedTab == index,
+                            onClick = { selectedTab = index },
+                            text = { Text(title, style = MaterialTheme.typography.labelSmall) }
+                        )
+                    }
+                }
+                
+                val currentRecords = if (selectedTab == 0) stats.timeRecords else stats.attemptRecords
+                
+                LazyColumn(modifier = Modifier.fillMaxSize().padding(top = 16.dp)) {
+                    // Group by code length
+                    (3..6).forEach { codeLength ->
+                        val records = currentRecords[codeLength] ?: emptyList()
+                        item {
+                            Text(
+                                text = "${stringResource(R.string.code_length)} $codeLength",
+                                style = MaterialTheme.typography.titleMedium,
+                                modifier = Modifier.padding(vertical = 8.dp),
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                        if (records.isEmpty()) {
+                            item {
+                                Text(
+                                    stringResource(R.string.no_records),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
+                                )
+                            }
+                        } else {
+                            itemsIndexed(records) { index, record ->
+                                Row(
+                                    modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text("${index + 1}. ${record.name}", style = MaterialTheme.typography.bodyMedium)
+                                    Text(
+                                        if (selectedTab == 0) "${record.value}${stringResource(R.string.sec_suffix)}" 
+                                        else "${record.value} ${stringResource(R.string.attempts).lowercase()}",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.close))
+            }
+        }
+    )
 }
 
 @Composable

@@ -1,20 +1,29 @@
 package com.stolyarchuk.colorguessinggame.ui
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.stolyarchuk.colorguessinggame.logic.GameLogic
+import com.stolyarchuk.colorguessinggame.logic.StatisticsRepository
 import com.stolyarchuk.colorguessinggame.model.GameColor
 import com.stolyarchuk.colorguessinggame.model.GuessRow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
-class GameViewModel : ViewModel() {
+class GameViewModel(private val repository: StatisticsRepository) : ViewModel() {
 
     private val _uiState = MutableStateFlow(GameState())
     val uiState: StateFlow<GameState> = _uiState.asStateFlow()
 
+    private val _statistics = MutableStateFlow(GameStatistics())
+    val statistics: StateFlow<GameStatistics> = _statistics.asStateFlow()
+
     init {
+        viewModelScope.launch {
+            repository.statsFlow.collect { stats ->
+                _statistics.value = stats
+            }
+        }
         startNewGame()
     }
 
@@ -26,8 +35,20 @@ class GameViewModel : ViewModel() {
                 currentGuessIndex = 0,
                 selectedPegIndex = 0,
                 secretCode = GameLogic.generateSecretCode(config.codeLength),
-                status = GameStatus.PLAYING
+                status = GameStatus.PLAYING,
+                startTime = System.currentTimeMillis(),
+                endTime = 0,
+                isNewRecord = false,
+                pendingRecord = null
             )
+        }
+    }
+
+    fun savePendingRecord(name: String) {
+        val pending = _uiState.value.pendingRecord ?: return
+        viewModelScope.launch {
+            repository.saveRecord(name, pending.timeInSeconds, pending.attempts, pending.codeLength)
+            _uiState.update { it.copy(pendingRecord = null, isNewRecord = false) }
         }
     }
 
@@ -90,12 +111,33 @@ class GameViewModel : ViewModel() {
                 else -> GameStatus.PLAYING
             }
 
+            var isRecord = false
+            var pending: PendingRecord? = null
+            if (won) {
+                val endTime = System.currentTimeMillis()
+                val timeSeconds = (endTime - state.startTime) / 1000
+                val attempts = state.currentGuessIndex + 1
+                if (repository.isNewRecord(timeSeconds, attempts, state.config.codeLength, _statistics.value)) {
+                    isRecord = true
+                    pending = PendingRecord(timeSeconds, attempts, state.config.codeLength)
+                }
+            }
+
             state.copy(
                 guessRows = updatedRows,
                 currentGuessIndex = if (newStatus == GameStatus.PLAYING) state.currentGuessIndex + 1 else state.currentGuessIndex,
                 selectedPegIndex = if (newStatus == GameStatus.PLAYING) 0 else state.selectedPegIndex,
-                status = newStatus
+                status = newStatus,
+                endTime = if (won) System.currentTimeMillis() else 0,
+                isNewRecord = isRecord,
+                pendingRecord = pending
             )
+        }
+    }
+
+    class Factory(private val repository: StatisticsRepository) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return GameViewModel(repository) as T
         }
     }
 }

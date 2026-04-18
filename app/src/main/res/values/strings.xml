@@ -21,4 +21,16 @@
     <string name="attempts_count">Attempts:</string>
     <string name="code_length">Code length:</string>
     <string name="save">Save</string>
+    <string name="statistics">Statistics</string>
+    <string name="new_record">New Record!</string>
+    <string name="enter_name">Enter your name:</string>
+    <string name="name_hint">Your Name</string>
+    <string name="time_records">Time Records</string>
+    <string name="attempts_records">Attempts Records</string>
+    <string name="rank">Rank</string>
+    <string name="name">Name</string>
+    <string name="time">Time</string>
+    <string name="attempts">Attempts</string>
+    <string name="no_records">No records yet</string>
+    <string name="sec_suffix">s</string>
 </resources>
