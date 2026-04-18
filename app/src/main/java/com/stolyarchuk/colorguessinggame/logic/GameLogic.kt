@@ -7,7 +7,7 @@ object GameLogic {
     private const val CODE_LENGTH = 5
 
     fun generateSecretCode(): List<GameColor> {
-        return List(CODE_LENGTH) { GameColor.values().random() }
+        return List(CODE_LENGTH) { GameColor.entries.random() }
     }
 
     fun evaluateGuess(secretCode: List<GameColor>, guess: List<GameColor?>): Feedback {
