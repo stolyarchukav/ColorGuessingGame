@@ -17,4 +17,8 @@
     <string name="confirm_restart_message">Вы уверены, что хотите начать новую игру? Текущий прогресс будет потерян.</string>
     <string name="confirm">Да</string>
     <string name="cancel">Отмена</string>
+    <string name="settings">Настройки</string>
+    <string name="attempts_count">Количество попыток:</string>
+    <string name="code_length">Длина кода:</string>
+    <string name="save">Сохранить</string>
 </resources>

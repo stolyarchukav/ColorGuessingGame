@@ -17,4 +17,8 @@
     <string name="confirm_restart_message">Are you sure you want to start a new game? Your current progress will be lost.</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
+    <string name="settings">Settings</string>
+    <string name="attempts_count">Attempts:</string>
+    <string name="code_length">Code length:</string>
+    <string name="save">Save</string>
 </resources>

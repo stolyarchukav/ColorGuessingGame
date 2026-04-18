@@ -8,9 +8,15 @@ enum class GameStatus {
 }
 
 data class GameState(
-    val guessRows: List<GuessRow> = List(12) { GuessRow() },
+    val guessRows: List<GuessRow> = emptyList(),
     val currentGuessIndex: Int = 0,
     val selectedPegIndex: Int = 0,
     val secretCode: List<GameColor> = emptyList(),
-    val status: GameStatus = GameStatus.PLAYING
+    val status: GameStatus = GameStatus.PLAYING,
+    val config: GameConfig = GameConfig()
+)
+
+data class GameConfig(
+    val attempts: Int = 12,
+    val codeLength: Int = 5
 )

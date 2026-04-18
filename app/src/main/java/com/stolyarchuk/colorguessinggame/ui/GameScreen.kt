@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.HelpOutline
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -42,6 +43,7 @@ fun GameScreen(
     val listState = rememberLazyListState()
     var showHelpDialog by remember { mutableStateOf(false) }
     var showRestartConfirmDialog by remember { mutableStateOf(false) }
+    var showSettingsDialog by remember { mutableStateOf(false) }
 
     // Scroll to current row only if it's not fully visible
     LaunchedEffect(uiState.currentGuessIndex) {
@@ -81,8 +83,9 @@ fun GameScreen(
                     }
                 },
                 navigationIcon = {
-                    // Empty spacer to balance the actions icon and help center the title
-                    Spacer(modifier = Modifier.width(48.dp))
+                    IconButton(onClick = { showSettingsDialog = true }) {
+                        Icon(Icons.Default.Settings, contentDescription = stringResource(R.string.settings))
+                    }
                 },
                 actions = {
                     IconButton(onClick = { showHelpDialog = true }) {
@@ -162,6 +165,17 @@ fun GameScreen(
         )
     }
 
+    if (showSettingsDialog) {
+        SettingsDialog(
+            config = uiState.config,
+            onSave = { attempts, codeLength ->
+                viewModel.updateConfig(attempts, codeLength)
+                showSettingsDialog = false
+            },
+            onDismiss = { showSettingsDialog = false }
+        )
+    }
+
     if (showHelpDialog) {
         GameHelpDialog(onDismiss = { showHelpDialog = false })
     }
@@ -186,6 +200,53 @@ fun RestartConfirmDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
         confirmButton = {
             Button(onClick = onConfirm) {
                 Text(stringResource(R.string.confirm))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.cancel))
+            }
+        }
+    )
+}
+
+@Composable
+fun SettingsDialog(
+    config: GameConfig,
+    onSave: (Int, Int) -> Unit,
+    onDismiss: () -> Unit
+) {
+    var attempts by remember { mutableStateOf(config.attempts.toFloat()) }
+    var codeLength by remember { mutableStateOf(config.codeLength.toFloat()) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.settings)) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                Column {
+                    Text("${stringResource(R.string.attempts_count)} ${attempts.toInt()}")
+                    Slider(
+                        value = attempts,
+                        onValueChange = { attempts = it },
+                        valueRange = 5f..20f,
+                        steps = 14
+                    )
+                }
+                Column {
+                    Text("${stringResource(R.string.code_length)} ${codeLength.toInt()}")
+                    Slider(
+                        value = codeLength,
+                        onValueChange = { codeLength = it },
+                        valueRange = 3f..6f,
+                        steps = 2
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            Button(onClick = { onSave(attempts.toInt(), codeLength.toInt()) }) {
+                Text(stringResource(R.string.save))
             }
         },
         dismissButton = {

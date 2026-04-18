@@ -1,7 +1,7 @@
 package com.stolyarchuk.colorguessinggame.model
 
 data class GuessRow(
-    val colors: List<GameColor?> = List(5) { null },
+    val colors: List<GameColor?> = emptyList(),
     val feedback: Feedback? = null,
     val isSubmitted: Boolean = false
 )

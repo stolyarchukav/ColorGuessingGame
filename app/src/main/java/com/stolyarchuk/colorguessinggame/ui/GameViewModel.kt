@@ -19,15 +19,21 @@ class GameViewModel : ViewModel() {
     }
 
     fun startNewGame() {
-        _uiState.update {
-            GameState(
-                guessRows = List(12) { GuessRow() },
+        _uiState.update { state ->
+            val config = state.config
+            state.copy(
+                guessRows = List(config.attempts) { GuessRow(colors = List(config.codeLength) { null }) },
                 currentGuessIndex = 0,
                 selectedPegIndex = 0,
-                secretCode = GameLogic.generateSecretCode(),
+                secretCode = GameLogic.generateSecretCode(config.codeLength),
                 status = GameStatus.PLAYING
             )
         }
+    }
+
+    fun updateConfig(attempts: Int, codeLength: Int) {
+        _uiState.update { it.copy(config = GameConfig(attempts, codeLength)) }
+        startNewGame()
     }
 
     fun setSelectedPeg(index: Int) {
@@ -48,7 +54,7 @@ class GameViewModel : ViewModel() {
             updatedRows[state.currentGuessIndex] = currentRow.copy(colors = updatedColors)
             
             // Auto-advance to next peg if available
-            val nextPegIndex = (state.selectedPegIndex + 1) % 5
+            val nextPegIndex = (state.selectedPegIndex + 1) % state.config.codeLength
             
             state.copy(
                 guessRows = updatedRows,
@@ -75,8 +81,8 @@ class GameViewModel : ViewModel() {
                 isSubmitted = true
             )
 
-            val won = feedback.blackPegs == 5
-            val lost = !won && state.currentGuessIndex == 11
+            val won = feedback.blackPegs == state.config.codeLength
+            val lost = !won && state.currentGuessIndex == state.config.attempts - 1
             
             val newStatus = when {
                 won -> GameStatus.WON
