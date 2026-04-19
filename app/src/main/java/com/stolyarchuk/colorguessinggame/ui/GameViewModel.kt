@@ -18,6 +18,9 @@ class GameViewModel(private val repository: StatisticsRepository) : ViewModel() 
     private val _statistics = MutableStateFlow(GameStatistics())
     val statistics: StateFlow<GameStatistics> = _statistics.asStateFlow()
 
+    val lastName: StateFlow<String> = repository.lastNameFlow
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
+
     init {
         viewModelScope.launch {
             repository.statsFlow.collect { stats ->

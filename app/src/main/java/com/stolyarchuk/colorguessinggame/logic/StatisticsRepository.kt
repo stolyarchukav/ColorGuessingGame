@@ -17,6 +17,7 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 class StatisticsRepository(private val context: Context) {
     private val gson = Gson()
     private val STATS_KEY = stringPreferencesKey("game_stats")
+    private val LAST_NAME_KEY = stringPreferencesKey("last_name")
 
     val statsFlow: Flow<GameStatistics> = context.dataStore.data.map { preferences ->
         val json = preferences[STATS_KEY]
@@ -29,6 +30,10 @@ class StatisticsRepository(private val context: Context) {
         } else {
             GameStatistics()
         }
+    }
+
+    val lastNameFlow: Flow<String> = context.dataStore.data.map { preferences ->
+        preferences[LAST_NAME_KEY] ?: ""
     }
 
     suspend fun saveRecord(
@@ -64,6 +69,7 @@ class StatisticsRepository(private val context: Context) {
                 attemptRecords = updatedAttemptRecords
             )
             preferences[STATS_KEY] = gson.toJson(newStats)
+            preferences[LAST_NAME_KEY] = name
         }
     }
 

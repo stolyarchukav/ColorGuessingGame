@@ -79,6 +79,7 @@ fun GameScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val stats by viewModel.statistics.collectAsState()
+    val lastName by viewModel.lastName.collectAsState()
     val listState = rememberLazyListState()
     var showHelpDialog by remember { mutableStateOf(false) }
     var showGiveUpConfirmDialog by remember { mutableStateOf(false) }
@@ -216,6 +217,7 @@ fun GameScreen(
     if (uiState.status != GameStatus.PLAYING) {
         if (uiState.isNewRecord && uiState.pendingRecord != null) {
             NewRecordDialog(
+                initialName = lastName,
                 onSave = { name -> viewModel.savePendingRecord(name) }
             )
         } else {
@@ -527,8 +529,8 @@ fun BottomControls(
 }
 
 @Composable
-fun NewRecordDialog(onSave: (String) -> Unit) {
-    var name by remember { mutableStateOf("") }
+fun NewRecordDialog(initialName: String = "", onSave: (String) -> Unit) {
+    var name by remember(initialName) { mutableStateOf(initialName) }
     AlertDialog(
         onDismissRequest = { },
         title = { Text(stringResource(R.string.new_record)) },
