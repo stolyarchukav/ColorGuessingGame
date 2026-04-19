@@ -22,6 +22,7 @@
     <string name="attempts_count">Attempts:</string>
     <string name="code_length">Code length:</string>
     <string name="save">Save</string>
+    <string name="show_timer">Show timer</string>
     <string name="statistics">Statistics</string>
     <string name="new_record">New Record!</string>
     <string name="enter_name">Enter your name:</string>

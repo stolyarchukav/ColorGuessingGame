@@ -79,6 +79,7 @@ fun GameScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val stats by viewModel.statistics.collectAsState()
+    val elapsedTime by viewModel.elapsedTime.collectAsState()
     val lastName by viewModel.lastName.collectAsState()
     val listState = rememberLazyListState()
     var showHelpDialog by remember { mutableStateOf(false) }
@@ -136,7 +137,7 @@ fun GameScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Row {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
                             IconButton(onClick = { showSettingsDialog = true }) {
                                 Icon(Icons.Default.Settings, contentDescription = stringResource(R.string.settings))
                             }
@@ -149,6 +150,24 @@ fun GameScreen(
                                 }
                             }
                         }
+
+                        // Timer display
+                        if (uiState.config.showTimer) {
+                            Surface(
+                                color = MaterialTheme.colorScheme.secondaryContainer,
+                                shape = CircleShape,
+                                modifier = Modifier.padding(horizontal = 8.dp)
+                            ) {
+                                Text(
+                                    text = formatTime(elapsedTime),
+                                    style = MaterialTheme.typography.labelLarge,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                                )
+                            }
+                        }
+
                         Row {
                             IconButton(onClick = { showHelpDialog = true }) {
                                 Icon(Icons.Default.HelpOutline, contentDescription = stringResource(R.string.help))
@@ -239,8 +258,8 @@ fun GameScreen(
     if (showSettingsDialog) {
         SettingsDialog(
             config = uiState.config,
-            onSave = { attempts, codeLength ->
-                viewModel.updateConfig(attempts, codeLength)
+            onSave = { attempts, codeLength, showTimer ->
+                viewModel.updateConfig(attempts, codeLength, showTimer)
                 showSettingsDialog = false
             },
             onDismiss = { showSettingsDialog = false }
@@ -260,6 +279,12 @@ fun GameScreen(
             onDismiss = { showGiveUpConfirmDialog = false }
         )
     }
+}
+
+fun formatTime(seconds: Long): String {
+    val mins = seconds / 60
+    val secs = seconds % 60
+    return "%02d:%02d".format(mins, secs)
 }
 
 @Composable
@@ -284,11 +309,12 @@ fun GiveUpConfirmDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
 @Composable
 fun SettingsDialog(
     config: GameConfig,
-    onSave: (Int, Int) -> Unit,
+    onSave: (Int, Int, Boolean) -> Unit,
     onDismiss: () -> Unit
 ) {
     var attempts by remember { mutableStateOf(config.attempts.toFloat()) }
     var codeLength by remember { mutableStateOf(config.codeLength.toFloat()) }
+    var showTimer by remember { mutableStateOf(config.showTimer) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -313,10 +339,23 @@ fun SettingsDialog(
                         steps = 2
                     )
                 }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { showTimer = !showTimer },
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(stringResource(R.string.show_timer))
+                    androidx.compose.material3.Switch(
+                        checked = showTimer,
+                        onCheckedChange = { showTimer = it }
+                    )
+                }
             }
         },
         confirmButton = {
-            Button(onClick = { onSave(attempts.toInt(), codeLength.toInt()) }) {
+            Button(onClick = { onSave(attempts.toInt(), codeLength.toInt(), showTimer) }) {
                 Text(stringResource(R.string.save))
             }
         },

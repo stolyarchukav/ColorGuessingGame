@@ -29,7 +29,8 @@ data class PendingRecord(
 
 data class GameConfig(
     val attempts: Int = 12,
-    val codeLength: Int = 5
+    val codeLength: Int = 5,
+    val showTimer: Boolean = false
 )
 
 data class RecordEntry(

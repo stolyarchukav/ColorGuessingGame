@@ -7,6 +7,7 @@ import com.stolyarchuk.colorguessinggame.logic.GameLogic
 import com.stolyarchuk.colorguessinggame.logic.StatisticsRepository
 import com.stolyarchuk.colorguessinggame.model.GameColor
 import com.stolyarchuk.colorguessinggame.model.GuessRow
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -20,6 +21,21 @@ class GameViewModel(private val repository: StatisticsRepository) : ViewModel() 
 
     val lastName: StateFlow<String> = repository.lastNameFlow
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
+
+    private val _timer = flow {
+        while (true) {
+            emit(System.currentTimeMillis())
+            delay(1000)
+        }
+    }
+
+    val elapsedTime: StateFlow<Long> = combine(_uiState, _timer) { state, now ->
+        if (state.status == GameStatus.PLAYING) {
+            (now - state.startTime).coerceAtLeast(0) / 1000
+        } else {
+            (state.endTime - state.startTime).coerceAtLeast(0) / 1000
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0L)
 
     init {
         viewModelScope.launch {
@@ -55,8 +71,8 @@ class GameViewModel(private val repository: StatisticsRepository) : ViewModel() 
         }
     }
 
-    fun updateConfig(attempts: Int, codeLength: Int) {
-        _uiState.update { it.copy(config = GameConfig(attempts, codeLength)) }
+    fun updateConfig(attempts: Int, codeLength: Int, showTimer: Boolean) {
+        _uiState.update { it.copy(config = GameConfig(attempts, codeLength, showTimer)) }
         startNewGame()
     }
 
@@ -114,10 +130,11 @@ class GameViewModel(private val repository: StatisticsRepository) : ViewModel() 
                 else -> GameStatus.PLAYING
             }
 
+            val endTime = if (newStatus != GameStatus.PLAYING) System.currentTimeMillis() else 0L
+
             var isRecord = false
             var pending: PendingRecord? = null
             if (won) {
-                val endTime = System.currentTimeMillis()
                 val timeSeconds = (endTime - state.startTime) / 1000
                 val attempts = state.currentGuessIndex + 1
                 if (repository.isNewRecord(timeSeconds, attempts, state.config.codeLength, _statistics.value)) {
@@ -131,7 +148,7 @@ class GameViewModel(private val repository: StatisticsRepository) : ViewModel() 
                 currentGuessIndex = if (newStatus == GameStatus.PLAYING) state.currentGuessIndex + 1 else state.currentGuessIndex,
                 selectedPegIndex = if (newStatus == GameStatus.PLAYING) 0 else state.selectedPegIndex,
                 status = newStatus,
-                endTime = if (won) System.currentTimeMillis() else 0,
+                endTime = endTime,
                 isNewRecord = isRecord,
                 pendingRecord = pending
             )
@@ -140,7 +157,7 @@ class GameViewModel(private val repository: StatisticsRepository) : ViewModel() 
 
     fun giveUp() {
         if (_uiState.value.status != GameStatus.PLAYING) return
-        _uiState.update { it.copy(status = GameStatus.LOST) }
+        _uiState.update { it.copy(status = GameStatus.LOST, endTime = System.currentTimeMillis()) }
     }
 
     class Factory(private val repository: StatisticsRepository) : ViewModelProvider.Factory {
