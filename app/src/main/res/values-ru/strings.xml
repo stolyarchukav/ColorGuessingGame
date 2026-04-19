@@ -22,6 +22,7 @@
     <string name="attempts_count">Количество попыток:</string>
     <string name="code_length">Длина кода:</string>
     <string name="save">Сохранить</string>
+    <string name="show_timer">Показывать таймер</string>
     <string name="statistics">Статистика</string>
     <string name="new_record">Новый рекорд!</string>
     <string name="enter_name">Введите ваше имя:</string>
