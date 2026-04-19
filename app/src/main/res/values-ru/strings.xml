@@ -3,6 +3,7 @@
     <string name="game_header_hint">Я загадал комбинацию цветов, попробуй угадать</string>
     <string name="restart_game">Начать заново</string>
     <string name="submit_guess">Проверить</string>
+    <string name="give_up">Сдаться, открыть код</string>
     <string name="victory">Победа!</string>
     <string name="game_over">Игра окончена</string>
     <string name="congratulations">Поздравляем!</string>

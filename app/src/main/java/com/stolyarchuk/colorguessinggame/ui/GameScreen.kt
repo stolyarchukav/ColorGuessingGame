@@ -28,6 +28,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.HelpOutline
 import androidx.compose.material.icons.filled.Leaderboard
 import androidx.compose.material.icons.filled.Refresh
@@ -80,7 +81,7 @@ fun GameScreen(
     val stats by viewModel.statistics.collectAsState()
     val listState = rememberLazyListState()
     var showHelpDialog by remember { mutableStateOf(false) }
-    var showRestartConfirmDialog by remember { mutableStateOf(false) }
+    var showGiveUpConfirmDialog by remember { mutableStateOf(false) }
     var showSettingsDialog by remember { mutableStateOf(false) }
     var showStatsDialog by remember { mutableStateOf(false) }
 
@@ -141,19 +142,15 @@ fun GameScreen(
                             IconButton(onClick = { showStatsDialog = true }) {
                                 Icon(Icons.Default.Leaderboard, contentDescription = stringResource(R.string.statistics))
                             }
+                            if (uiState.status == GameStatus.PLAYING) {
+                                IconButton(onClick = { showGiveUpConfirmDialog = true }) {
+                                    Icon(Icons.Default.Flag, contentDescription = stringResource(R.string.give_up))
+                                }
+                            }
                         }
                         Row {
                             IconButton(onClick = { showHelpDialog = true }) {
                                 Icon(Icons.Default.HelpOutline, contentDescription = stringResource(R.string.help))
-                            }
-                            IconButton(onClick = { 
-                                if (uiState.status == GameStatus.PLAYING) {
-                                    showRestartConfirmDialog = true 
-                                } else {
-                                    viewModel.startNewGame()
-                                }
-                            }) {
-                                Icon(Icons.Default.Refresh, contentDescription = stringResource(R.string.restart_game))
                             }
                         }
                     }
@@ -161,12 +158,28 @@ fun GameScreen(
             }
         },
         bottomBar = {
-            BottomControls(
-                status = uiState.status,
-                onSubmit = { viewModel.submitGuess() },
-                onRestart = { viewModel.startNewGame() },
-                secretCode = uiState.secretCode
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .navigationBarsPadding()
+                    .background(MaterialTheme.colorScheme.surface)
+            ) {
+                AnimatedVisibility(
+                    visible = uiState.status == GameStatus.PLAYING,
+                    enter = slideInVertically { it } + fadeIn(),
+                    exit = slideOutVertically { it } + fadeOut()
+                ) {
+                    ColorPalette(
+                        onColorSelected = { color -> viewModel.selectColor(color) }
+                    )
+                }
+                BottomControls(
+                    status = uiState.status,
+                    onSubmit = { viewModel.submitGuess() },
+                    onRestart = { viewModel.startNewGame() },
+                    secretCode = uiState.secretCode
+                )
+            }
         },
         modifier = modifier
     ) { padding ->
@@ -195,16 +208,6 @@ fun GameScreen(
                         rowIndex = index
                     )
                 }
-            }
-
-            AnimatedVisibility(
-                visible = uiState.status == GameStatus.PLAYING,
-                enter = slideInVertically { it } + fadeIn(),
-                exit = slideOutVertically { it } + fadeOut()
-            ) {
-                ColorPalette(
-                    onColorSelected = { color -> viewModel.selectColor(color) }
-                )
             }
         }
     }
@@ -246,23 +249,23 @@ fun GameScreen(
         GameHelpDialog(onDismiss = { showHelpDialog = false })
     }
 
-    if (showRestartConfirmDialog) {
-        RestartConfirmDialog(
+    if (showGiveUpConfirmDialog) {
+        GiveUpConfirmDialog(
             onConfirm = {
-                showRestartConfirmDialog = false
-                viewModel.startNewGame()
+                showGiveUpConfirmDialog = false
+                viewModel.giveUp()
             },
-            onDismiss = { showRestartConfirmDialog = false }
+            onDismiss = { showGiveUpConfirmDialog = false }
         )
     }
 }
 
 @Composable
-fun RestartConfirmDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
+fun GiveUpConfirmDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.confirm_restart_title)) },
-        text = { Text(stringResource(R.string.confirm_restart_message)) },
+        title = { Text(stringResource(R.string.give_up)) },
+        text = { Text(stringResource(R.string.confirm_restart_message)) }, // Reuse or use new string
         confirmButton = {
             Button(onClick = onConfirm) {
                 Text(stringResource(R.string.confirm))
@@ -461,18 +464,19 @@ fun FeedbackDot(color: Color) {
 fun ColorPalette(onColorSelected: (GameColor) -> Unit) {
     Surface(
         tonalElevation = 4.dp,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
     ) {
         Row(
             modifier = Modifier
-                .padding(16.dp)
+                .padding(horizontal = 16.dp, vertical = 8.dp)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             GameColor.entries.forEach { gameColor ->
                 Box(
                     modifier = Modifier
-                        .size(48.dp)
+                        .size(44.dp)
                         .clip(CircleShape)
                         .background(gameColor.color)
                         .clickable { onColorSelected(gameColor) }
@@ -496,8 +500,7 @@ fun BottomControls(
     ) {
         Column(
             modifier = Modifier
-                .padding(16.dp)
-                .navigationBarsPadding(),
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {

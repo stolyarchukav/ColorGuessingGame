@@ -3,6 +3,7 @@
     <string name="game_header_hint">I have thought of a color combination, try to guess it</string>
     <string name="restart_game">Restart Game</string>
     <string name="submit_guess">Submit Guess</string>
+    <string name="give_up">Give up, show code</string>
     <string name="victory">Victory!</string>
     <string name="game_over">Game Over</string>
     <string name="congratulations">Congratulations!</string>

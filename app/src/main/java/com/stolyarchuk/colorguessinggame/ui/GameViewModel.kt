@@ -135,6 +135,11 @@ class GameViewModel(private val repository: StatisticsRepository) : ViewModel() 
         }
     }
 
+    fun giveUp() {
+        if (_uiState.value.status != GameStatus.PLAYING) return
+        _uiState.update { it.copy(status = GameStatus.LOST) }
+    }
+
     class Factory(private val repository: StatisticsRepository) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return GameViewModel(repository) as T
