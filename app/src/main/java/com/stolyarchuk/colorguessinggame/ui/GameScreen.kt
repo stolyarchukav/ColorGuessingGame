@@ -71,49 +71,57 @@ fun GameScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Box(
-                        modifier = Modifier.fillMaxWidth(),
-                        contentAlignment = Alignment.Center
+            Surface(
+                color = MaterialTheme.colorScheme.primaryContainer,
+                tonalElevation = 3.dp
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .statusBarsPadding()
+                ) {
+                    Text(
+                        text = stringResource(R.string.game_header_hint),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 1.dp, top = 1.dp, end = 1.dp, bottom = 1.dp)
+                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 4.dp, end = 4.dp, bottom = 4.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            text = stringResource(R.string.game_header_hint),
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                },
-                navigationIcon = {
-                    Row {
-                        IconButton(onClick = { showSettingsDialog = true }) {
-                            Icon(Icons.Default.Settings, contentDescription = stringResource(R.string.settings))
+                        Row {
+                            IconButton(onClick = { showSettingsDialog = true }) {
+                                Icon(Icons.Default.Settings, contentDescription = stringResource(R.string.settings))
+                            }
+                            IconButton(onClick = { showStatsDialog = true }) {
+                                Icon(Icons.Default.Leaderboard, contentDescription = stringResource(R.string.statistics))
+                            }
                         }
-                        IconButton(onClick = { showStatsDialog = true }) {
-                            Icon(Icons.Default.Leaderboard, contentDescription = stringResource(R.string.statistics))
+                        Row {
+                            IconButton(onClick = { showHelpDialog = true }) {
+                                Icon(Icons.Default.HelpOutline, contentDescription = stringResource(R.string.help))
+                            }
+                            IconButton(onClick = { 
+                                if (uiState.status == GameStatus.PLAYING) {
+                                    showRestartConfirmDialog = true 
+                                } else {
+                                    viewModel.startNewGame()
+                                }
+                            }) {
+                                Icon(Icons.Default.Refresh, contentDescription = stringResource(R.string.restart_game))
+                            }
                         }
                     }
-                },
-                actions = {
-                    IconButton(onClick = { showHelpDialog = true }) {
-                        Icon(Icons.Default.HelpOutline, contentDescription = stringResource(R.string.help))
-                    }
-                    IconButton(onClick = { 
-                        if (uiState.status == GameStatus.PLAYING) {
-                            showRestartConfirmDialog = true 
-                        } else {
-                            viewModel.startNewGame()
-                        }
-                    }) {
-                        Icon(Icons.Default.Refresh, contentDescription = stringResource(R.string.restart_game))
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            )
+                }
+            }
         },
         bottomBar = {
             BottomControls(
@@ -151,7 +159,7 @@ fun GameScreen(
                     )
                 }
             }
-            
+
             AnimatedVisibility(
                 visible = uiState.status == GameStatus.PLAYING,
                 enter = slideInVertically { it } + fadeIn(),
