@@ -35,4 +35,6 @@
     <string name="attempts">Спроби</string>
     <string name="no_records">Рекордів поки немає</string>
     <string name="sec_suffix">с</string>
+    <string name="rate_app">Оцінити додаток</string>
+    <string name="more_apps">Більше додатків</string>
 </resources>

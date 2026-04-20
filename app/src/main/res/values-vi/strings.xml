@@ -35,4 +35,6 @@
     <string name="attempts">Số lần thử</string>
     <string name="no_records">Chưa có kỷ lục nào</string>
     <string name="sec_suffix">s</string>
+    <string name="rate_app">Đánh giá ứng dụng</string>
+    <string name="more_apps">Thêm ứng dụng</string>
 </resources>

@@ -35,4 +35,6 @@
     <string name="attempts">Upaya</string>
     <string name="no_records">Belum ada rekor</string>
     <string name="sec_suffix">d</string>
+    <string name="rate_app">Beri Nilai Aplikasi</string>
+    <string name="more_apps">Aplikasi Lainnya</string>
 </resources>

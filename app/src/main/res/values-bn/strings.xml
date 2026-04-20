@@ -35,4 +35,6 @@
     <string name="attempts">চেষ্টা</string>
     <string name="no_records">এখনও পর্যন্ত কোন রেকর্ড নেই</string>
     <string name="sec_suffix">সেকেন্ড</string>
+    <string name="rate_app">অ্যাপ রেট করুন</string>
+    <string name="more_apps">আরও অ্যাপ</string>
 </resources>

@@ -35,4 +35,6 @@
     <string name="attempts">Tentativas</string>
     <string name="no_records">Ainda sem recordes</string>
     <string name="sec_suffix">s</string>
+    <string name="rate_app">Avaliar aplicação</string>
+    <string name="more_apps">Mais aplicações</string>
 </resources>

@@ -35,4 +35,6 @@
     <string name="attempts">المحاولات</string>
     <string name="no_records">لا توجد سجلات بعد</string>
     <string name="sec_suffix">ث</string>
+    <string name="rate_app">تقييم التطبيق</string>
+    <string name="more_apps">تطبيقات أكثر</string>
 </resources>

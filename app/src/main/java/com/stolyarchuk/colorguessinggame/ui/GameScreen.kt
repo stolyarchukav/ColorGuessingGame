@@ -59,6 +59,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -315,6 +316,7 @@ fun SettingsDialog(
     var attempts by remember { mutableStateOf(config.attempts.toFloat()) }
     var codeLength by remember { mutableStateOf(config.codeLength.toFloat()) }
     var showTimer by remember { mutableStateOf(config.showTimer) }
+    val uriHandler = LocalUriHandler.current
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -352,6 +354,20 @@ fun SettingsDialog(
                         onCheckedChange = { showTimer = it }
                     )
                 }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    TextButton(onClick = { uriHandler.openUri("https://play.google.com/store/apps/details?id=com.stolyarchuk.colorguessinggame") }) {
+                        Text(stringResource(R.string.rate_app))
+                    }
+                    TextButton(onClick = { uriHandler.openUri("https://play.google.com/store/search?q=pub:ForzaVerita") }) {
+                        Text(stringResource(R.string.more_apps))
+                    }
+                }
             }
         },
         confirmButton = {
@@ -360,7 +376,7 @@ fun SettingsDialog(
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) {
+            TextButton(onClick = { onDismiss() }) {
                 Text(stringResource(R.string.cancel))
             }
         }

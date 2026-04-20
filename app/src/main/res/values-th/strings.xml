@@ -35,4 +35,6 @@
     <string name="attempts">ครั้ง</string>
     <string name="no_records">ยังไม่มีสถิติ</string>
     <string name="sec_suffix">วินาที</string>
+    <string name="rate_app">ให้คะแนนแอป</string>
+    <string name="more_apps">แอปเพิ่มเติม</string>
 </resources>

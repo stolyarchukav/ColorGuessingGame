@@ -35,4 +35,6 @@
     <string name="attempts">시도</string>
     <string name="no_records">기록이 없습니다</string>
     <string name="sec_suffix">초</string>
+    <string name="rate_app">앱 평가하기</string>
+    <string name="more_apps">더 많은 앱</string>
 </resources>

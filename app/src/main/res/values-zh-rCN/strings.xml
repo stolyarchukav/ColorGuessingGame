@@ -35,4 +35,6 @@
     <string name="attempts">尝试次数</string>
     <string name="no_records">暂无记录</string>
     <string name="sec_suffix">秒</string>
+    <string name="rate_app">评分</string>
+    <string name="more_apps">更多应用</string>
 </resources>

@@ -35,4 +35,6 @@
     <string name="attempts">Deneme</string>
     <string name="no_records">Henüz rekor yok</string>
     <string name="sec_suffix">sn</string>
+    <string name="rate_app">Uygulamayı oyla</string>
+    <string name="more_apps">Daha fazla uygulama</string>
 </resources>

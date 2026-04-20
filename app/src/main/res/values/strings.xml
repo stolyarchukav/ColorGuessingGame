@@ -35,4 +35,6 @@
     <string name="attempts">Attempts</string>
     <string name="no_records">No records yet</string>
     <string name="sec_suffix">s</string>
+    <string name="rate_app">Rate App</string>
+    <string name="more_apps">More Apps</string>
 </resources>

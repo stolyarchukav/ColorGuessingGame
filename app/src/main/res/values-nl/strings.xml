@@ -35,4 +35,6 @@
     <string name="attempts">Pogingen</string>
     <string name="no_records">Nog geen records</string>
     <string name="sec_suffix">s</string>
+    <string name="rate_app">App beoordelen</string>
+    <string name="more_apps">Meer apps</string>
 </resources>
