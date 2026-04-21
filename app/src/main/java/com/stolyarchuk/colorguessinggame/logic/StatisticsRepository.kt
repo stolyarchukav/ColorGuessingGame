@@ -18,6 +18,7 @@ class StatisticsRepository(private val context: Context) {
     private val gson = Gson()
     private val STATS_KEY = stringPreferencesKey("game_stats")
     private val LAST_NAME_KEY = stringPreferencesKey("last_name")
+    private val LAST_RATE_PROMPT_TIME_KEY = androidx.datastore.preferences.core.longPreferencesKey("last_rate_prompt_time")
 
     val statsFlow: Flow<GameStatistics> = context.dataStore.data.map { preferences ->
         val json = preferences[STATS_KEY]
@@ -34,6 +35,16 @@ class StatisticsRepository(private val context: Context) {
 
     val lastNameFlow: Flow<String> = context.dataStore.data.map { preferences ->
         preferences[LAST_NAME_KEY] ?: ""
+    }
+
+    val lastRatePromptTimeFlow: Flow<Long> = context.dataStore.data.map { preferences ->
+        preferences[LAST_RATE_PROMPT_TIME_KEY] ?: 0L
+    }
+
+    suspend fun updateLastRatePromptTime(time: Long) {
+        context.dataStore.edit { preferences ->
+            preferences[LAST_RATE_PROMPT_TIME_KEY] = time
+        }
     }
 
     suspend fun saveRecord(
@@ -66,10 +77,28 @@ class StatisticsRepository(private val context: Context) {
 
             val newStats = stats.copy(
                 timeRecords = updatedTimeRecords,
-                attemptRecords = updatedAttemptRecords
+                attemptRecords = updatedAttemptRecords,
+                totalWins = stats.totalWins + 1
             )
             preferences[STATS_KEY] = gson.toJson(newStats)
             preferences[LAST_NAME_KEY] = name
+        }
+    }
+
+    suspend fun incrementWins() {
+        context.dataStore.edit { preferences ->
+            val currentJson = preferences[STATS_KEY]
+            val stats = if (currentJson != null) {
+                try {
+                    gson.fromJson(currentJson, GameStatistics::class.java)
+                } catch (e: Exception) {
+                    GameStatistics()
+                }
+            } else {
+                GameStatistics()
+            }
+            val newStats = stats.copy(totalWins = stats.totalWins + 1)
+            preferences[STATS_KEY] = gson.toJson(newStats)
         }
     }
 

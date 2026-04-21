@@ -280,12 +280,42 @@ fun GameScreen(
             onDismiss = { showGiveUpConfirmDialog = false }
         )
     }
+
+    if (uiState.showRateDialog) {
+        val uriHandler = androidx.compose.ui.platform.LocalUriHandler.current
+        RateAppDialog(
+            onRate = {
+                uriHandler.openUri("https://play.google.com/store/apps/details?id=com.stolyarchuk.colorguessinggame")
+                viewModel.dismissRateDialog()
+            },
+            onDismiss = { viewModel.dismissRateDialog() }
+        )
+    }
 }
 
 fun formatTime(seconds: Long): String {
     val mins = seconds / 60
     val secs = seconds % 60
     return "%02d:%02d".format(mins, secs)
+}
+
+@Composable
+fun RateAppDialog(onRate: () -> Unit, onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.rate_dialog_title)) },
+        text = { Text(stringResource(R.string.rate_dialog_message)) },
+        confirmButton = {
+            Button(onClick = onRate) {
+                Text(stringResource(R.string.rate_now))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.later))
+            }
+        }
+    )
 }
 
 @Composable

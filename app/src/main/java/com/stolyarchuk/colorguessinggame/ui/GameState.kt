@@ -18,7 +18,9 @@ data class GameState(
     val startTime: Long = 0,
     val endTime: Long = 0,
     val isNewRecord: Boolean = false,
-    val pendingRecord: PendingRecord? = null
+    val pendingRecord: PendingRecord? = null,
+    val showRateDialog: Boolean = false,
+    val pendingRatePrompt: Boolean = false
 )
 
 data class PendingRecord(
@@ -41,5 +43,6 @@ data class RecordEntry(
 
 data class GameStatistics(
     val timeRecords: Map<Int, List<RecordEntry>> = emptyMap(), // codeLength -> top 10
-    val attemptRecords: Map<Int, List<RecordEntry>> = emptyMap() // codeLength -> top 10
+    val attemptRecords: Map<Int, List<RecordEntry>> = emptyMap(), // codeLength -> top 10
+    val totalWins: Int = 0
 )

@@ -19,6 +19,9 @@ class GameViewModel(private val repository: StatisticsRepository) : ViewModel() 
     private val _statistics = MutableStateFlow(GameStatistics())
     val statistics: StateFlow<GameStatistics> = _statistics.asStateFlow()
 
+    private val lastRatePromptTime = repository.lastRatePromptTimeFlow
+        .stateIn(viewModelScope, SharingStarted.Eagerly, 0L)
+
     val lastName: StateFlow<String> = repository.lastNameFlow
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
 
@@ -47,6 +50,10 @@ class GameViewModel(private val repository: StatisticsRepository) : ViewModel() 
     }
 
     fun startNewGame() {
+        if (_uiState.value.pendingRatePrompt) {
+            _uiState.update { it.copy(showRateDialog = true, pendingRatePrompt = false) }
+            return
+        }
         _uiState.update { state ->
             val config = state.config
             state.copy(
@@ -58,7 +65,9 @@ class GameViewModel(private val repository: StatisticsRepository) : ViewModel() 
                 startTime = System.currentTimeMillis(),
                 endTime = 0,
                 isNewRecord = false,
-                pendingRecord = null
+                pendingRecord = null,
+                showRateDialog = false,
+                pendingRatePrompt = false
             )
         }
     }
@@ -67,7 +76,11 @@ class GameViewModel(private val repository: StatisticsRepository) : ViewModel() 
         val pending = _uiState.value.pendingRecord ?: return
         viewModelScope.launch {
             repository.saveRecord(name, pending.timeInSeconds, pending.attempts, pending.codeLength)
-            _uiState.update { it.copy(pendingRecord = null, isNewRecord = false) }
+            if (_uiState.value.pendingRatePrompt) {
+                _uiState.update { it.copy(pendingRecord = null, isNewRecord = false, showRateDialog = true, pendingRatePrompt = false) }
+            } else {
+                _uiState.update { it.copy(pendingRecord = null, isNewRecord = false) }
+            }
         }
     }
 
@@ -134,12 +147,27 @@ class GameViewModel(private val repository: StatisticsRepository) : ViewModel() 
 
             var isRecord = false
             var pending: PendingRecord? = null
+            var shouldShowRateDialog = false
+            
             if (won) {
                 val timeSeconds = (endTime - state.startTime) / 1000
                 val attempts = state.currentGuessIndex + 1
                 if (repository.isNewRecord(timeSeconds, attempts, state.config.codeLength, _statistics.value)) {
                     isRecord = true
                     pending = PendingRecord(timeSeconds, attempts, state.config.codeLength)
+                } else {
+                    // Increment wins even if it's not a record
+                    viewModelScope.launch {
+                        repository.incrementWins()
+                    }
+                }
+                
+                // Check if we should show rate dialog
+                // Once a week AND at least 5 wins total
+                val oneWeekMs = 7L * 24 * 60 * 60 * 1000
+                val enoughWins = (_statistics.value.totalWins + 1) >= 5
+                if (enoughWins && System.currentTimeMillis() - lastRatePromptTime.value > oneWeekMs) {
+                    shouldShowRateDialog = true
                 }
             }
 
@@ -150,8 +178,16 @@ class GameViewModel(private val repository: StatisticsRepository) : ViewModel() 
                 status = newStatus,
                 endTime = endTime,
                 isNewRecord = isRecord,
-                pendingRecord = pending
+                pendingRecord = pending,
+                pendingRatePrompt = shouldShowRateDialog
             )
+        }
+    }
+
+    fun dismissRateDialog() {
+        viewModelScope.launch {
+            repository.updateLastRatePromptTime(System.currentTimeMillis())
+            _uiState.update { it.copy(showRateDialog = false) }
         }
     }
 
