@@ -41,4 +41,6 @@
     <string name="rate_dialog_message">If you enjoy playing Color Logic, please take a moment to rate it on the Play Store. It really helps us!</string>
     <string name="rate_now">Rate Now</string>
     <string name="later">Later</string>
+    <string name="clear_statistics">Clear Statistics</string>
+    <string name="confirm_clear_stats">Are you sure you want to clear all statistics? This action cannot be undone.</string>
 </resources>

@@ -28,6 +28,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.HelpOutline
 import androidx.compose.material.icons.filled.Leaderboard
@@ -35,6 +36,7 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -87,6 +89,7 @@ fun GameScreen(
     var showGiveUpConfirmDialog by remember { mutableStateOf(false) }
     var showSettingsDialog by remember { mutableStateOf(false) }
     var showStatsDialog by remember { mutableStateOf(false) }
+    var showClearStatsConfirm by remember { mutableStateOf(false) }
 
     // Scroll to current row only if it's not fully visible
     LaunchedEffect(uiState.currentGuessIndex) {
@@ -252,7 +255,8 @@ fun GameScreen(
     if (showStatsDialog) {
         StatisticsDialog(
             stats = stats,
-            onDismiss = { showStatsDialog = false }
+            onDismiss = { showStatsDialog = false },
+            onClear = { showClearStatsConfirm = true }
         )
     }
 
@@ -289,6 +293,30 @@ fun GameScreen(
                 viewModel.dismissRateDialog()
             },
             onDismiss = { viewModel.dismissRateDialog() }
+        )
+    }
+
+    if (showClearStatsConfirm) {
+        AlertDialog(
+            onDismissRequest = { showClearStatsConfirm = false },
+            title = { Text(stringResource(R.string.clear_statistics)) },
+            text = { Text(stringResource(R.string.confirm_clear_stats)) },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        viewModel.clearStatistics()
+                        showClearStatsConfirm = false
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                ) {
+                    Text(stringResource(R.string.confirm))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showClearStatsConfirm = false }) {
+                    Text(stringResource(R.string.cancel))
+                }
+            }
         )
     }
 }
@@ -642,13 +670,28 @@ fun NewRecordDialog(initialName: String = "", onSave: (String) -> Unit) {
 }
 
 @Composable
-fun StatisticsDialog(stats: GameStatistics, onDismiss: () -> Unit) {
+fun StatisticsDialog(stats: GameStatistics, onDismiss: () -> Unit, onClear: () -> Unit) {
     var selectedTab by remember { mutableIntStateOf(0) }
     val tabs = listOf(stringResource(R.string.time_records), stringResource(R.string.attempts_records))
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.statistics)) },
+        title = {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(stringResource(R.string.statistics))
+                IconButton(onClick = onClear) {
+                    Icon(
+                        Icons.Default.Delete,
+                        contentDescription = stringResource(R.string.clear_statistics),
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                }
+            }
+        },
         text = {
             Column(modifier = Modifier.fillMaxWidth().height(400.dp)) {
                 TabRow(selectedTabIndex = selectedTab) {

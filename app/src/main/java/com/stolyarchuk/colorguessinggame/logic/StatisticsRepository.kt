@@ -102,6 +102,12 @@ class StatisticsRepository(private val context: Context) {
         }
     }
 
+    suspend fun clearStatistics() {
+        context.dataStore.edit { preferences ->
+            preferences.remove(STATS_KEY)
+        }
+    }
+
     fun isNewRecord(timeSeconds: Long, attempts: Int, codeLength: Int, stats: GameStatistics): Boolean {
         val timeList = stats.timeRecords[codeLength] ?: emptyList()
         val isTimeRecord = timeList.size < 10 || timeSeconds < (timeList.lastOrNull()?.value ?: Long.MAX_VALUE)

@@ -191,6 +191,12 @@ class GameViewModel(private val repository: StatisticsRepository) : ViewModel() 
         }
     }
 
+    fun clearStatistics() {
+        viewModelScope.launch {
+            repository.clearStatistics()
+        }
+    }
+
     fun giveUp() {
         if (_uiState.value.status != GameStatus.PLAYING) return
         _uiState.update { it.copy(status = GameStatus.LOST, endTime = System.currentTimeMillis()) }
