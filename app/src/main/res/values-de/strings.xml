@@ -37,4 +37,10 @@
     <string name="sec_suffix">s</string>
     <string name="rate_app">App bewerten</string>
     <string name="more_apps">Mehr Apps</string>
+    <string name="rate_dialog_title">Gefällt dir das Spiel?</string>
+    <string name="rate_dialog_message">Wenn dir Farben-Logik gefällt, nimm dir bitte einen Moment Zeit, um es im Play Store zu bewerten. Es hilft uns sehr!</string>
+    <string name="rate_now">Jetzt bewerten</string>
+    <string name="later">Später</string>
+    <string name="clear_statistics">Statistiken löschen</string>
+    <string name="confirm_clear_stats">Bist du sicher, dass du alle Statistiken löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden.</string>
 </resources>

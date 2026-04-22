@@ -37,4 +37,10 @@
     <string name="sec_suffix">s</string>
     <string name="rate_app">App beoordelen</string>
     <string name="more_apps">Meer apps</string>
+    <string name="rate_dialog_title">Geniet je van het spel?</string>
+    <string name="rate_dialog_message">Als je Kleurenlogica graag speelt, neem dan even de tijd om het te beoordelen in de Play Store. Het helpt ons enorm!</string>
+    <string name="rate_now">Nu beoordelen</string>
+    <string name="later">Later</string>
+    <string name="clear_statistics">Statistieken wissen</string>
+    <string name="confirm_clear_stats">Weet je zeker dat je alle statistieken wilt wissen? Deze actie kan niet ongedaan worden gemaakt.</string>
 </resources>

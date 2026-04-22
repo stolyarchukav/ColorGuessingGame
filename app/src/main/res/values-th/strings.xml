@@ -37,4 +37,10 @@
     <string name="sec_suffix">วินาที</string>
     <string name="rate_app">ให้คะแนนแอป</string>
     <string name="more_apps">แอปเพิ่มเติม</string>
+    <string name="rate_dialog_title">สนุกกับเกมไหม?</string>
+    <string name="rate_dialog_message">หากคุณสนุกกับการเล่นตรรกะสี โปรดสละเวลาสักครู่เพื่อให้คะแนนใน Play Store มันช่วยเราได้มากจริงๆ!</string>
+    <string name="rate_now">ให้คะแนนตอนนี้</string>
+    <string name="later">ไว้ทีหลัง</string>
+    <string name="clear_statistics">ล้างสถิติ</string>
+    <string name="confirm_clear_stats">คุณแน่ใจหรือไม่ว่าต้องการล้างสถิติทั้งหมด? การดำเนินการนี้ไม่สามารถย้อนกลับได้</string>
 </resources>

@@ -37,4 +37,10 @@
     <string name="sec_suffix">sn</string>
     <string name="rate_app">Uygulamayı oyla</string>
     <string name="more_apps">Daha fazla uygulama</string>
+    <string name="rate_dialog_title">Oyundan keyif alıyor musunuz?</string>
+    <string name="rate_dialog_message">Renk Mantığı oynamaktan keyif alıyorsanız, lütfen Play Store\'da oylamak için bir dakikanızı ayırın. Bu bize gerçekten yardımcı olur!</string>
+    <string name="rate_now">Şimdi Oyla</string>
+    <string name="later">Daha Sonra</string>
+    <string name="clear_statistics">İstatistikleri Temizle</string>
+    <string name="confirm_clear_stats">Tüm istatistikleri temizlemek istediğinizden emin misiniz? Bu işlem geri alınamaz.</string>
 </resources>

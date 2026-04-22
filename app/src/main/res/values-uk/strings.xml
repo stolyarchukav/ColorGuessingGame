@@ -37,4 +37,10 @@
     <string name="sec_suffix">с</string>
     <string name="rate_app">Оцінити додаток</string>
     <string name="more_apps">Більше додатків</string>
+    <string name="rate_dialog_title">Подобається гра?</string>
+    <string name="rate_dialog_message">Якщо вам подобається грати в Логіку кольору, будь ласка, знайдіть хвилинку, щоб оцінити її в Play Store. Це дуже нам допоможе!</string>
+    <string name="rate_now">Оцінити зараз</string>
+    <string name="later">Пізніше</string>
+    <string name="clear_statistics">Очистити статистику</string>
+    <string name="confirm_clear_stats">Ви впевнені, що хочете очистити всю статистику? Цю дію неможливо скасувати.</string>
 </resources>

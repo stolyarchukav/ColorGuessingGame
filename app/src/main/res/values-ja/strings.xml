@@ -37,4 +37,10 @@
     <string name="sec_suffix">秒</string>
     <string name="rate_app">アプリを評価</string>
     <string name="more_apps">他のアプリ</string>
+    <string name="rate_dialog_title">ゲームを楽しんでいますか？</string>
+    <string name="rate_dialog_message">カラーロジックを楽しんでいただけているなら、ぜひPlayストアで評価をお願いします。励みになります！</string>
+    <string name="rate_now">今すぐ評価</string>
+    <string name="later">後で</string>
+    <string name="clear_statistics">統計を消去</string>
+    <string name="confirm_clear_stats">本当にすべての統計を消去しますか？この操作は取り消せません。</string>
 </resources>

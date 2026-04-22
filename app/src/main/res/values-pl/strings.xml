@@ -37,4 +37,10 @@
     <string name="sec_suffix">s</string>
     <string name="rate_app">Oceń aplikację</string>
     <string name="more_apps">Więcej aplikacji</string>
+    <string name="rate_dialog_title">Podoba Ci się gra?</string>
+    <string name="rate_dialog_message">Jeśli lubisz grać w Logikę Kolorów, poświęć chwilę na ocenę w Play Store. To nam bardzo pomaga!</string>
+    <string name="rate_now">Oceń teraz</string>
+    <string name="later">Później</string>
+    <string name="clear_statistics">Wyczyść statystyki</string>
+    <string name="confirm_clear_stats">Czy na pewno chcesz wyczyścić wszystkie statystyki? Tej operacji nie można cofnąć.</string>
 </resources>

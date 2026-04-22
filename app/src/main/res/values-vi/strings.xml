@@ -37,4 +37,10 @@
     <string name="sec_suffix">s</string>
     <string name="rate_app">Đánh giá ứng dụng</string>
     <string name="more_apps">Thêm ứng dụng</string>
+    <string name="rate_dialog_title">Bạn thích trò chơi này chứ?</string>
+    <string name="rate_dialog_message">Nếu bạn thích chơi Logic Màu Sắc, vui lòng dành chút thời gian để đánh giá trên Play Store. Điều đó thực sự giúp ích cho chúng tôi!</string>
+    <string name="rate_now">Đánh giá ngay</string>
+    <string name="later">Để sau</string>
+    <string name="clear_statistics">Xóa thống kê</string>
+    <string name="confirm_clear_stats">Bạn có chắc chắn muốn xóa tất cả thống kê không? Hành động này không thể hoàn tác.</string>
 </resources>

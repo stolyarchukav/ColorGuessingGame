@@ -37,4 +37,10 @@
     <string name="sec_suffix">초</string>
     <string name="rate_app">앱 평가하기</string>
     <string name="more_apps">더 많은 앱</string>
+    <string name="rate_dialog_title">게임을 즐기고 계신가요?</string>
+    <string name="rate_dialog_message">컬러 로직을 즐겁게 플레이하고 계신다면, 잠시 시간을 내어 Play 스토어에서 평가해 주세요. 저희에게 큰 도움이 됩니다!</string>
+    <string name="rate_now">지금 평가하기</string>
+    <string name="later">나중에</string>
+    <string name="clear_statistics">통계 삭제</string>
+    <string name="confirm_clear_stats">모든 통계를 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.</string>
 </resources>

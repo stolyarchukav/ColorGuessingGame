@@ -37,4 +37,10 @@
     <string name="sec_suffix">सेकंड</string>
     <string name="rate_app">ऐप को रेट करें</string>
     <string name="more_apps">अधिक ऐप्स</string>
+    <string name="rate_dialog_title">खेल का आनंद ले रहे हैं?</string>
+    <string name="rate_dialog_message">यदि आप कलर लॉजिक खेलने का आनंद लेते हैं, तो कृपया Play Store पर इसे रेट करने के लिए कुछ समय निकालें। यह वास्तव में हमारी मदद करता है!</string>
+    <string name="rate_now">अभी रेट करें</string>
+    <string name="later">बाद में</string>
+    <string name="clear_statistics">आंकड़े साफ़ करें</string>
+    <string name="confirm_clear_stats">क्या आप वाकई सभी आँकड़े साफ़ करना चाहते हैं? इस क्रिया को पूर्ववत नहीं किया जा सकता।</string>
 </resources>

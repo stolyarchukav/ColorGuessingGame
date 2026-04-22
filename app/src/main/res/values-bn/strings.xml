@@ -37,4 +37,10 @@
     <string name="sec_suffix">সেকেন্ড</string>
     <string name="rate_app">অ্যাপ রেট করুন</string>
     <string name="more_apps">আরও অ্যাপ</string>
+    <string name="rate_dialog_title">গেমটি কি আপনার ভালো লাগছে?</string>
+    <string name="rate_dialog_message">আপনি যদি কালার লজিক খেলতে পছন্দ করেন, তবে দয়া করে প্লে স্টোরে এটিকে রেট দিতে কিছুটা সময় নিন। এটি আমাদের সত্যিই সাহায্য করে!</string>
+    <string name="rate_now">এখনই রেট দিন</string>
+    <string name="later">পরে</string>
+    <string name="clear_statistics">পরিসংখ্যান মুছুন</string>
+    <string name="confirm_clear_stats">আপনি কি নিশ্চিত যে আপনি সমস্ত পরিসংখ্যান মুছে ফেলতে চান? এই কাজটি আর ফেরানো যাবে না।</string>
 </resources>

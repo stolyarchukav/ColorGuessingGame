@@ -37,4 +37,10 @@
     <string name="sec_suffix">s</string>
     <string name="rate_app">Valuta l\'app</string>
     <string name="more_apps">Altre app</string>
+    <string name="rate_dialog_title">Ti piace il gioco?</string>
+    <string name="rate_dialog_message">Se ti piace giocare a Logica dei Colori, per favore prenditi un momento per valutarlo sul Play Store. Ci aiuta molto!</string>
+    <string name="rate_now">Valuta ora</string>
+    <string name="later">Più tardi</string>
+    <string name="clear_statistics">Cancella statistiche</string>
+    <string name="confirm_clear_stats">Sei sicuro di voler cancellare tutte le statistiche? Questa azione non può essere annullata.</string>
 </resources>
